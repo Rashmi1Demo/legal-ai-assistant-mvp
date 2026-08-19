@@ -59,15 +59,31 @@ Open:
 
 ## Architecture
 
-User -> Legal AI Web Portal -> FastAPI -> Database
-                                      |
-                                      +-> Classification
-                                      |
-                                      +-> RAG Retriever -> Internal Knowledge Base
-                                                           |
-                                                           +-> Ollama / Llama 3.2
-                                                                    |
-                                                                    -> AI Summary + Suggested Next Step
+## Architecture
+
+```text
+User
+  |
+  v
+Legal AI Web Portal
+  |
+  v
+FastAPI REST API
+  |
+  +--------------------> SQLAlchemy / Database
+  |
+  +--------------------> Practice Area & Priority Classification
+  |
+  +--------------------> RAG Retriever
+  |                         |
+  |                         v
+  |                  Internal Legal Knowledge Base
+  |                         |
+  |                         v
+  +--------------------> Ollama / Llama 3.2
+                            |
+                            v
+                 AI Summary + Suggested Next Step
 
 ## PostgreSQL
 
