@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AlGhazzawi Legal AI Assistant - Demo</title>
+<style>
+:root{
+  --bg:#f5f1ea;
+  --paper:#fffdf9;
+  --ink:#1d1b18;
+  --muted:#756f66;
+  --gold:#a67c3a;
+  --gold-dark:#7a5a27;
+  --line:#e5ddd0;
+  --nav:#1b1a18;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Georgia, 'Times New Roman', serif;background:var(--bg);color:var(--ink)}
+.topbar{background:var(--nav);color:white;padding:22px 32px;display:flex;justify-content:space-between;align-items:center}
+.brand h1{font-size:24px;margin:0;letter-spacing:.2px}
+.brand p{margin:5px 0 0;color:#d7d0c7;font-family:Arial,sans-serif;font-size:13px}
+.demo-badge{font-family:Arial,sans-serif;font-size:12px;border:1px solid #8f826e;border-radius:999px;padding:7px 11px;color:#eadfcf}
+main{max-width:1200px;margin:28px auto;padding:0 20px 40px}
+.hero{display:grid;grid-template-columns:1.35fr .65fr;gap:18px;margin-bottom:20px}
+.hero-card,.card,.stat{background:var(--paper);border:1px solid var(--line);border-radius:14px}
+.hero-card{padding:28px}
+.hero-card h2{margin:0 0 10px;font-size:30px}
+.hero-card p{font-family:Arial,sans-serif;color:var(--muted);line-height:1.55;margin:0}
+.security-note{padding:22px;background:#25221e;color:#f8f3ec;border-radius:14px}
+.security-note h3{margin:0 0 8px;font-size:18px}
+.security-note p{margin:0;font-family:Arial,sans-serif;color:#d8d0c5;font-size:13px;line-height:1.5}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
+.stat{padding:16px 18px}
+.stat span{font-family:Arial,sans-serif;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px}
+.value{font-size:29px;margin-top:7px;color:var(--gold-dark)}
+.grid{display:grid;grid-template-columns:.95fr 1.35fr;gap:18px}
+.card{padding:22px}
+.card h2{margin:0 0 5px}
+.sub{font-family:Arial,sans-serif;color:var(--muted);font-size:13px;margin:0 0 18px}
+label{display:block;font-family:Arial,sans-serif;font-size:13px;font-weight:700;margin:12px 0 6px}
+input,textarea{width:100%;padding:11px 12px;border:1px solid #cfc4b4;border-radius:8px;background:white;font:14px Arial,sans-serif}
+textarea{resize:vertical}
+button{border:0;border-radius:8px;padding:10px 14px;cursor:pointer;background:var(--gold-dark);color:white;font:bold 13px Arial,sans-serif}
+button.secondary{background:#eee8df;color:#3d352a}
+button:hover{opacity:.92}
+.result{margin-top:18px;padding:16px;background:#fbf8f2;border:1px solid #e8dece;border-radius:10px}
+.result h3{margin-top:0}
+.result p,pre{font-family:Arial,sans-serif;font-size:13px;line-height:1.5}
+.matter{border-top:1px solid var(--line);padding:16px 0}
+.matter:first-child{border-top:0}
+.matter-title{font-size:17px}
+.meta{font-family:Arial,sans-serif;font-size:12px;color:var(--muted);margin-top:4px}
+.badge{display:inline-block;font-family:Arial,sans-serif;font-size:11px;background:#f0e8dc;color:#5f4930;padding:5px 8px;border-radius:999px;margin:8px 5px 4px 0}
+.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}
+pre{white-space:pre-wrap}
+.footer-note{font-family:Arial,sans-serif;color:var(--muted);font-size:11px;margin-top:20px;text-align:center}
+@media(max-width:900px){.hero,.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand">
+    <h1>AlGhazzawi Legal AI Assistant</h1>
+    <p>Demo MVP for legal operations and internal knowledge assistance</p>
+  </div>
+  <div class="demo-badge">DEMO / ASSESSMENT</div>
+</div>
+
+<main>
+  <section class="hero">
+    <div class="hero-card">
+      <h2>AI-assisted legal matter intake</h2>
+      <p>
+        A small internal platform that helps classify legal requests, recommend priority,
+        retrieve relevant internal knowledge, and generate a concise operational next step.
+      </p>
+    </div>
+  
+  </section>
+
+  <section class="stats">
+    <div class="stat"><span>Total Matters</span><div class="value" id="total">0</div></div>
+    <div class="stat"><span>New</span><div class="value" id="new">0</div></div>
+    <div class="stat"><span>Under Review</span><div class="value" id="under_review">0</div></div>
+    <div class="stat"><span>Completed</span><div class="value" id="completed">0</div></div>
+    <div class="stat"><span>High Priority</span><div class="value" id="high_priority">0</div></div>
+  </section>
+
+  <section class="grid">
+    <div class="card">
+      <h2>New Legal Request</h2>
+      <p class="sub">Submit a demo matter and let the AI assistant analyze it.</p>
+
+      <label>Client / Matter Name</label>
+      <input id="client_name" value="Client ABC">
+
+      <label>Request Title</label>
+      <input id="title" value="Review termination clause in Client ABC contract">
+
+      <label>Description</label>
+      <textarea id="description" rows="5">Client wants to know the notice period and key points to review before termination.</textarea>
+
+      <button id="createBtn">Analyze Request</button>
+
+      <div id="result"></div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <h2 style="margin-bottom:4px">Matter Queue</h2>
+          <p class="sub" style="margin-bottom:0">Recent requests and review status</p>
+        </div>
+        <button class="secondary" id="refreshBtn">Refresh</button>
+      </div>
+      <div id="matters"></div>
+    </div>
+  </section>
+
+  <div class="footer-note">
+    Demo project only — not an official production system and not intended to provide legal advice.
+  </div>
+</main>
+
+<script>
+function escapeHtml(value){
+  return String(value??'')
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'","&#039;");
+}
+
+async function createMatter(){
+  const client_name=document.getElementById('client_name').value.trim();
+  const title=document.getElementById('title').value.trim();
+  const description=document.getElementById('description').value.trim();
+
+  if(!title||!description){
+    alert('Please enter the title and description.');
+    return;
+  }
+
+  const button=document.getElementById('createBtn');
+  button.disabled=true;
+  button.textContent='Analyzing...';
+
+  try{
+    const response=await fetch('/matters',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({client_name,title,description})
+    });
+
+    const data=await response.json();
+    if(!response.ok) throw new Error(data.detail||'Unable to create matter');
+
+    document.getElementById('result').innerHTML=`
+      <div class="result">
+        <h3>AI Analysis</h3>
+        <p><b>Practice Area:</b> ${escapeHtml(data.practice_area)}</p>
+        <p><b>Priority:</b> ${escapeHtml(data.priority)}</p>
+        <p><b>Knowledge Source:</b> ${escapeHtml(data.knowledge_source)}</p>
+        <p><b>AI Summary:</b> ${escapeHtml(data.ai_summary)}</p>
+        <p><b>Suggested Next Step:</b></p>
+        <pre>${escapeHtml(data.suggested_next_step)}</pre>
+      </div>`;
+
+    await refreshAll();
+  }catch(error){
+    alert(error.message);
+  }finally{
+    button.disabled=false;
+    button.textContent='Analyze Request';
+  }
+}
+
+async function loadDashboard(){
+  const response=await fetch('/dashboard');
+  const data=await response.json();
+
+  ['total','new','under_review','completed','high_priority'].forEach(key=>{
+    document.getElementById(key).textContent=data[key];
+  });
+}
+
+async function loadMatters(){
+  const response=await fetch('/matters');
+  const matters=await response.json();
+
+  if(!matters.length){
+    document.getElementById('matters').innerHTML='<p class="sub">No matters yet.</p>';
+    return;
+  }
+
+  document.getElementById('matters').innerHTML=matters.map(m=>`
+    <div class="matter">
+      <div class="matter-title"><b>#${m.id} ${escapeHtml(m.title)}</b></div>
+      <div class="meta">${escapeHtml(m.client_name||'No client specified')}</div>
+      <span class="badge">${escapeHtml(m.practice_area)}</span>
+      <span class="badge">${escapeHtml(m.priority)}</span>
+      <span class="badge">${escapeHtml(m.status)}</span>
+      <p class="sub" style="margin-top:8px">${escapeHtml(m.ai_summary||'')}</p>
+      <div class="meta">Knowledge: ${escapeHtml(m.knowledge_source||'')}</div>
+      <div class="actions">
+        ${m.status!=='Under Review'?`<button onclick="changeStatus(${m.id}, 'Under Review')">Under Review</button>`:''}
+        ${m.status!=='Assigned'?`<button onclick="changeStatus(${m.id}, 'Assigned')">Assign</button>`:''}
+        ${m.status!=='Completed'?`<button onclick="changeStatus(${m.id}, 'Completed')">Complete</button>`:''}
+      </div>
+    </div>
+  `).join('');
+}
+
+async function changeStatus(id,status){
+  await fetch(`/matters/${id}/status`,{
+    method:'PATCH',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({status})
+  });
+  await refreshAll();
+}
+
+async function refreshAll(){
+  await Promise.all([loadDashboard(),loadMatters()]);
+}
+
+document.getElementById('createBtn').addEventListener('click',createMatter);
+document.getElementById('refreshBtn').addEventListener('click',refreshAll);
+refreshAll();
+</script>
+</body>
+</html>

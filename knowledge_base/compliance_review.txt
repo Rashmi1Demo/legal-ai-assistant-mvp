@@ -1,0 +1,7 @@
+Compliance Review Checklist
+
+1. Identify the policy, regulation, or internal control involved.
+2. Record the business process and affected department.
+3. Identify the data, documents, or approvals required for review.
+4. Document any known compliance gap or deadline.
+5. Escalate the matter to the responsible compliance or legal owner.

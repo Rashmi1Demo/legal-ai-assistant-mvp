@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="650" viewBox="0 0 1200 650">
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#6b5a40"/></marker></defs>
+<style>
+.box{fill:#fffaf2;stroke:#8b7352;stroke-width:2;rx:18;ry:18}
+.title{font:700 28px Georgia;fill:#2a241d}
+.text{font:600 20px Arial;fill:#3d3429;text-anchor:middle}
+.small{font:15px Arial;fill:#756b5d;text-anchor:middle}
+.arrow{stroke:#6b5a40;stroke-width:3;marker-end:url(#arrow)}
+</style>
+<text x="600" y="45" text-anchor="middle" class="title">Legal AI Assistant - Demo Architecture</text>
+<rect x="430" y="85" width="340" height="80" class="box"/><text x="600" y="120" class="text">Users</text><text x="600" y="145" class="small">Lawyer / Legal Operations / Admin</text>
+<rect x="430" y="210" width="340" height="80" class="box"/><text x="600" y="245" class="text">Legal AI Web Portal</text><text x="600" y="270" class="small">Matter intake and dashboard</text>
+<rect x="430" y="335" width="340" height="80" class="box"/><text x="600" y="370" class="text">FastAPI Backend</text><text x="600" y="395" class="small">REST APIs / Workflow / Classification</text>
+<rect x="70" y="500" width="250" height="80" class="box"/><text x="195" y="535" class="text">Database</text><text x="195" y="560" class="small">SQLite / PostgreSQL</text>
+<rect x="350" y="500" width="250" height="80" class="box"/><text x="475" y="535" class="text">RAG Retriever</text><text x="475" y="560" class="small">Internal Legal Knowledge</text>
+<rect x="630" y="500" width="250" height="80" class="box"/><text x="755" y="535" class="text">Local LLM</text><text x="755" y="560" class="small">Ollama / Llama 3.2</text>
+<rect x="910" y="500" width="220" height="80" class="box"/><text x="1020" y="535" class="text">AI Output</text><text x="1020" y="560" class="small">Summary + Next Step</text>
+<line x1="600" y1="165" x2="600" y2="210" class="arrow"/>
+<line x1="600" y1="290" x2="600" y2="335" class="arrow"/>
+<line x1="535" y1="415" x2="235" y2="500" class="arrow"/>
+<line x1="580" y1="415" x2="490" y2="500" class="arrow"/>
+<line x1="625" y1="415" x2="740" y2="500" class="arrow"/>
+<line x1="880" y1="540" x2="910" y2="540" class="arrow"/>
+</svg>
