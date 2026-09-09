@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign In - Case Analyst</title>
+<style>
+:root{--navy:#071b36;--navy2:#0d2d50;--gold:#d8ad61;--ink:#0d1c3b;--muted:#64718c;--line:#dfe6f0;}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,"Segoe UI",Arial,sans-serif;color:var(--ink);background:#f7f9fc}
+.login-shell{min-height:100vh;display:grid;grid-template-columns:minmax(340px,32%) 1fr}
+.brand-panel{position:relative;overflow:hidden;padding:38px 42px;color:#fff;background:linear-gradient(180deg,rgba(6,27,54,.96),rgba(5,20,39,.98));display:flex;flex-direction:column;justify-content:space-between}
+.brand-panel:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 70% 70%,rgba(216,173,97,.15),transparent 30%),linear-gradient(135deg,transparent 0 58%,rgba(255,255,255,.035) 58% 59%,transparent 59%);pointer-events:none}
+.brand-top,.brand-bottom{position:relative;z-index:1}
+.logo{width:86px;height:86px;object-fit:contain;background:#fff;border-radius:16px;padding:7px;display:block;margin:0 auto 15px;box-shadow:0 14px 30px rgba(0,0,0,.22)}
+.firm{text-align:center;color:var(--gold);font-family:Georgia,serif;letter-spacing:2px;font-size:25px;margin:0}
+.firm-sub{text-align:center;font-size:10px;letter-spacing:2px;color:#e9d3aa;margin-top:7px}
+.rule{height:1px;background:rgba(216,173,97,.32);margin:25px 0}
+.motto{text-align:center;font-size:10px;letter-spacing:3px;color:#d7deea;margin-bottom:30px}
+.feature{display:grid;grid-template-columns:42px 1fr;gap:14px;margin:22px 0;align-items:start}
+.feature-icon{width:38px;height:38px;border:1px solid rgba(216,173,97,.65);border-radius:11px;display:grid;place-items:center;color:var(--gold);font-size:20px}
+.feature b{display:block;font-size:14px;margin:2px 0 6px}
+.feature span{font-size:12px;line-height:1.55;color:#bdc8d8}
+.legal-art{height:190px;border-radius:18px;margin-top:28px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(0,0,0,.2));display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.legal-art:after{content:"⚖";font-size:110px;color:rgba(216,173,97,.85);text-shadow:0 14px 28px rgba(0,0,0,.3)}
+.tagline{text-align:center;font-family:Georgia,serif;font-style:italic;color:#e8e0d1;font-size:17px;margin-top:20px}
+.main-panel{position:relative;display:grid;place-items:center;padding:45px;background:radial-gradient(circle at 75% 45%,#fff 0,#f8fbff 42%,#eef3f9 100%);overflow:hidden}
+.main-panel:after{content:"⚖";position:absolute;right:-30px;top:50%;transform:translateY(-50%);font-size:430px;color:rgba(11,35,68,.025);pointer-events:none}
+.login-card{position:relative;z-index:1;width:min(540px,100%);background:rgba(255,255,255,.96);border:1px solid rgba(222,229,239,.9);border-radius:22px;padding:44px 42px 36px;box-shadow:0 24px 70px rgba(30,51,86,.12)}
+.login-card h1{font-size:32px;text-align:center;margin:0 0 9px}
+.subtitle{text-align:center;color:var(--muted);font-size:15px;margin:0}
+.assessment{text-align:center;color:#7b879d;font-size:12px;margin:8px 0 30px}
+.field{margin-bottom:17px}
+.field label{display:block;font-size:11px;font-weight:800;color:#52617a;margin:0 0 7px}
+.input-wrap{position:relative}
+.input-wrap input{width:100%;height:56px;border:1px solid var(--line);border-radius:12px;padding:0 48px 0 46px;font-size:14px;outline:none;transition:.2s;background:#fff}
+.input-wrap input:focus{border-color:#7c91c5;box-shadow:0 0 0 4px rgba(49,88,175,.08)}
+.input-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);font-size:18px;color:#3f5d93}
+.eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);border:0;background:transparent;cursor:pointer;color:#4f6389;font-size:17px}
+.options{display:flex;align-items:center;justify-content:space-between;margin:4px 0 22px;font-size:12px;color:#52617a}
+.remember{display:flex;align-items:center;gap:8px}
+.signin{width:100%;height:56px;border:0;border-radius:12px;background:linear-gradient(90deg,#103f8c,#2557e8);color:#fff;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 10px 24px rgba(32,82,210,.2)}
+.signin:hover{filter:brightness(1.04)}
+.error{min-height:20px;color:#b93843;text-align:center;font-size:12px;margin:12px 0 0}
+.secure{display:flex;align-items:center;justify-content:center;gap:9px;border-top:1px solid #e5eaf2;margin-top:22px;padding-top:22px;color:#65728a;font-size:11px}
+.firm-foot{text-align:center;color:#738097;font-size:11px;margin-top:12px}
+.page-foot{position:absolute;bottom:18px;left:0;right:0;text-align:center;color:#8a96aa;font-size:10px}
+@media(max-width:900px){.login-shell{grid-template-columns:1fr}.brand-panel{display:none}.main-panel{min-height:100vh;padding:24px}.login-card{padding:34px 24px}.page-foot{position:static;margin-top:20px}}
+</style>
+</head>
+<body>
+<div class="login-shell">
+  <aside class="brand-panel">
+    <div class="brand-top">
+      <img class="logo" src="data:image/jpeg;base64,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" alt="Al Ghazzawi & Partners">
+      <h2 class="firm">AL GHAZZAWI</h2>
+      <div class="firm-sub">ADVOCATES &amp; LEGAL CONSULTANTS</div>
+      <div class="rule"></div>
+      <div class="motto">TRUST &nbsp; | &nbsp; EXPERTISE &nbsp; | &nbsp; RESULTS</div>
+      <div class="feature"><div class="feature-icon">◇</div><div><b>Trusted Legal Expertise</b><span>Modern solutions for complex legal challenges.</span></div></div>
+      <div class="feature"><div class="feature-icon">⚖</div><div><b>Client Focused</b><span>Professional, consistent and responsible legal support.</span></div></div>
+      <div class="feature"><div class="feature-icon">▤</div><div><b>Innovation with Integrity</b><span>AI-assisted case analysis designed to support legal professionals.</span></div></div>
+    </div>
+    <div class="brand-bottom">
+      <div class="legal-art" aria-hidden="true"></div>
+      <div class="tagline">Building a Fairer Tomorrow</div>
+    </div>
+  </aside>
+  <main class="main-panel">
+    <section class="login-card">
+      <h1>Welcome Back</h1>
+      <p class="subtitle">Sign in to your Case Analyst account</p>
+      <p class="assessment">Al Ghazzawi Legal AI Assessment</p>
+      <form id="loginForm" autocomplete="off">
+        <div class="field"><label for="username">USERNAME</label><div class="input-wrap"><span class="input-icon">♙</span><input id="username" name="username" type="text" value="admin" autocomplete="username" required></div></div>
+        <div class="field"><label for="password">PASSWORD</label><div class="input-wrap"><span class="input-icon">▣</span><input id="password" name="password" type="password" autocomplete="current-password" required><button class="eye" id="togglePassword" type="button" aria-label="Show password">◉</button></div></div>
+        <div class="options"><label class="remember"><input id="remember" type="checkbox"> Remember me</label><span>Secure Access</span></div>
+        <button class="signin" type="submit">Sign In &nbsp; →</button>
+        <div id="loginError" class="error" role="alert"></div>
+      </form>
+      <div class="secure">🔒 <span>This system is for authorized demonstration use only.</span></div>
+      <div class="firm-foot">Al Ghazzawi &amp; Partners · Candidate Assessment MVP</div>
+    </section>
+    <div class="page-foot">Legal AI Assessment — Case Analyst</div>
+  </main>
+</div>
+<script>
+const DEMO_USERNAME = 'admin';
+const DEMO_PASSWORD = 'AlGhazzawi@2026';
+
+if (sessionStorage.getItem('caseAnalystAuthenticated') === 'true') {
+  window.location.replace('/case-analyst');
+}
+
+document.getElementById('togglePassword').addEventListener('click', () => {
+  const password = document.getElementById('password');
+  password.type = password.type === 'password' ? 'text' : 'password';
+});
+
+document.getElementById('loginForm').addEventListener('submit', (event) => {
+  event.preventDefault();
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  const error = document.getElementById('loginError');
+  if (username === DEMO_USERNAME && password === DEMO_PASSWORD) {
+    sessionStorage.setItem('caseAnalystAuthenticated', 'true');
+    window.location.replace('/case-analyst');
+    return;
+  }
+  error.textContent = 'Invalid username or password.';
+});
+</script>
+</body>
+</html>
