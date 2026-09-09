@@ -1,0 +1,1018 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Case Analyst - Legal AI Assessment MVP</title>
+
+<style>
+:root{
+  --navy:#0b1739;
+  --navy-deep:#07132e;
+  --purple:#5c54ff;
+  --purple2:#7f53ff;
+  --gold:#c9a15d;
+  --blue:#3b82f6;
+  --green:#16a36a;
+  --amber:#f59e0b;
+  --red:#ef5b62;
+  --cyan:#2bbac5;
+  --bg:#f6f8fc;
+  --panel:#ffffff;
+  --ink:#18213b;
+  --muted:#68738f;
+  --line:#e5eaf4;
+  --shadow:0 10px 30px rgba(29,42,85,.08);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--ink)}
+button,input,select{font:inherit}
+.app{min-height:100vh;display:grid;grid-template-columns:230px 1fr}
+
+.sidebar{
+  position:sticky;top:0;height:100vh;
+  background:linear-gradient(180deg,var(--navy),var(--navy-deep));
+  color:#fff;padding:28px 18px 22px;
+  display:flex;flex-direction:column;justify-content:space-between
+}
+.brand{text-align:center}
+.brand-icon{
+  width:64px;height:64px;margin:0 auto 16px;border-radius:18px;
+  background:linear-gradient(135deg,#5a5cff,#7657ff);
+  display:grid;place-items:center;font-size:32px;
+  box-shadow:0 12px 28px rgba(99,76,255,.35)
+}
+.brand h1{font-size:24px;margin:0 0 8px;font-weight:800}
+.brand p{font-size:12px;line-height:1.65;color:#bdc7df;margin:0}
+.nav-chip{
+  margin-top:30px;padding:13px 14px;border-radius:12px;
+  background:linear-gradient(90deg,#405dff,#7354ff);
+  font-size:13px;font-weight:700;display:flex;gap:9px;
+  justify-content:center;align-items:center;
+  box-shadow:0 8px 22px rgba(78,84,255,.28)
+}
+.sidebar-card{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;padding:14px;margin-bottom:18px;
+  font-size:11px;color:#cbd4e8;line-height:1.6
+}
+.sidebar-card b{display:block;color:#fff;font-size:12px;margin-bottom:5px}
+.ready{display:flex;align-items:center;gap:8px;margin-top:10px}
+.dot{width:8px;height:8px;border-radius:50%;background:#35d18a;box-shadow:0 0 0 4px rgba(53,209,138,.12)}
+.company-divider{height:1px;background:rgba(255,255,255,.18);margin:18px 0}
+.company-brand{text-align:center}
+.company-label{
+  font-size:9px;letter-spacing:1.8px;color:#9eabc5;
+  text-transform:uppercase;margin-bottom:10px
+}
+.company-fallback{color:#e5c78e;font-family:Georgia,serif}
+.company-fallback strong{display:block;font-size:16px;letter-spacing:.5px}
+.company-fallback span{display:block;font-size:11px;letter-spacing:2px;margin-top:4px}
+.company-note{margin-top:10px;font-size:9px;line-height:1.5;color:#91a0bd}
+
+.content{padding:30px 34px 44px;max-width:1320px;width:100%;margin:0 auto}
+.header{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;margin-bottom:22px}
+.header h2{font-size:34px;line-height:1.15;margin:0 0 8px;letter-spacing:-.6px}
+.gradient-text{
+  background:linear-gradient(90deg,#384eaa,#7660cb);
+  -webkit-background-clip:text;background-clip:text;color:transparent
+}
+.header p{color:var(--muted);font-size:14px;margin:0}
+.header-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.badge{
+  border:1px solid #bcb2ff;color:#5941eb;background:#fff;border-radius:999px;
+  padding:8px 13px;font-size:11px;font-weight:800;white-space:nowrap
+}
+.language-switch{
+  display:flex;align-items:center;gap:5px;background:#fff;
+  border:1px solid var(--line);border-radius:11px;padding:4px;
+  box-shadow:0 4px 14px rgba(29,42,85,.06)
+}
+.lang-btn{
+  border:0;background:transparent;color:#5b6680;padding:7px 10px;
+  border-radius:8px;font-size:11px;font-weight:800;cursor:pointer
+}
+.lang-btn.active{background:var(--navy);color:#fff}
+
+.card{background:var(--panel);border:1px solid var(--line);border-radius:17px;box-shadow:var(--shadow)}
+.upload-card{padding:18px;margin-bottom:16px}
+.dropzone{
+  border:1.5px dashed #bdb6ff;border-radius:15px;min-height:190px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;background:linear-gradient(180deg,#fff,#fbfaff);padding:22px
+}
+.upload-icon{
+  width:54px;height:54px;border-radius:50%;display:grid;place-items:center;
+  background:linear-gradient(135deg,#5666e8,#7655e8);color:#fff;font-size:27px;
+  box-shadow:0 10px 24px rgba(102,81,255,.23);margin-bottom:10px
+}
+.dropzone h3{margin:0;font-size:18px}
+.dropzone p{margin:7px 0 15px;color:var(--muted);font-size:12px}
+.file-row{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}
+.file-picker{position:relative;overflow:hidden;display:inline-flex}
+.file-picker input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.btn{border:0;border-radius:11px;padding:11px 18px;font-weight:800;font-size:12px;cursor:pointer}
+.btn-primary{color:#fff;background:linear-gradient(90deg,#4d61e5,#7556eb);box-shadow:0 8px 22px rgba(92,78,255,.22)}
+.btn-primary:disabled{opacity:.55;cursor:not-allowed}
+.selected-file{
+  min-width:300px;max-width:520px;border:1px solid var(--line);border-radius:11px;
+  background:#fff;padding:10px 13px;text-align:left;color:#3c4865;font-size:12px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+.tip{margin-top:11px;color:#66718b;font-size:11px}
+
+.workflow{padding:18px 18px 14px;margin-bottom:14px}
+.workflow-title{font-weight:800;font-size:13px;margin-bottom:18px}
+.steps{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.step{text-align:center;position:relative}
+.step:not(:last-child):after{
+  content:"";position:absolute;top:25px;left:67%;width:68%;height:2px;
+  border-top:2px dashed #d7dded;z-index:0
+}
+.circle{
+  position:relative;z-index:1;margin:0 auto 8px;width:50px;height:50px;border-radius:50%;
+  background:#f2efff;color:#684cf6;display:grid;place-items:center;font-weight:800;font-size:20px
+}
+.step:nth-child(4) .circle{background:#eaf3ff;color:#3777eb}
+.step:nth-child(5) .circle{background:#f2efff;color:#6746eb}
+.step span{display:block;font-size:11px;font-weight:700;line-height:1.35}
+.check{
+  margin:7px auto 0;width:17px;height:17px;border-radius:50%;
+  display:grid;place-items:center;background:#dfe5f0;color:#fff;font-size:10px
+}
+.workflow.active .check{background:#35bf84}
+
+.status{
+  display:none;margin:14px 0;padding:14px 17px;border-radius:13px;
+  font-size:12px;font-weight:700;border:1px solid transparent
+}
+.status.success{display:flex;background:#ecfbf5;color:#14764e;border-color:#9ce4c5}
+.status.error{display:block;background:#fff0f1;color:#a23b43;border-color:#ffc7cb}
+.status.loading{display:flex;background:#f1f4ff;color:#4f5d8f;border-color:#dbe1ff}
+.spinner{
+  display:inline-block;width:14px;height:14px;border:2px solid rgba(79,93,143,.25);
+  border-top-color:#5e63ff;border-radius:50%;animation:spin .8s linear infinite;margin-right:8px
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.report{display:none;margin-top:16px}
+.report-head{
+  display:flex;justify-content:space-between;gap:20px;align-items:center;
+  padding:18px 20px;border-bottom:1px solid var(--line)
+}
+.report-title{display:flex;align-items:center;gap:12px}
+.report-mark{
+  width:42px;height:42px;border-radius:12px;background:#f1edff;color:#684cf6;
+  display:grid;place-items:center;font-size:22px
+}
+.report-head h2{font-size:22px;margin:0 0 4px}
+.meta{font-size:11px;color:var(--muted);line-height:1.55}
+.provider{text-align:right}
+.pdf-btn{margin-top:10px;display:none;align-items:center;gap:7px}
+
+.report-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:14px}
+.section{border:1px solid var(--line);border-radius:14px;padding:16px;background:#fff;min-height:150px}
+.section h3{font-size:13px;margin:0 0 12px;display:flex;align-items:center;gap:9px}
+.ico{width:27px;height:27px;border-radius:8px;display:grid;place-items:center;font-size:14px}
+.i-summary{background:#efeaff;color:#724bff}.i-strong{background:#eafaf3;color:var(--green)}
+.i-weak{background:#fff6df;color:var(--amber)}.i-risk{background:#fff0f1;color:var(--red)}
+.i-missing{background:#eef5ff;color:var(--blue)}.i-entity{background:#eafafa;color:var(--cyan)}
+.i-question{background:#f1edff;color:#744cff}.i-next{background:#edf6ff;color:#4294e7}
+.section p,.section li{font-size:12px;line-height:1.65;color:#34405d}
+.section p{margin:0}.section ul{margin:0;padding-left:18px}.section li{margin:4px 0}
+
+.sources{margin:0 14px 14px;padding:16px 18px}
+.sources h3{margin:0 0 12px;font-size:13px}
+.source{
+  display:inline-flex;align-items:center;gap:6px;background:#f1f0ff;color:#4f49bd;
+  padding:7px 10px;border-radius:999px;font-size:11px;font-weight:700;margin:4px 5px 0 0
+}
+.source::before{content:"●";font-size:8px;color:#6654ef}
+.footer{text-align:center;color:#8b94aa;font-size:10px;margin-top:18px}
+
+/* Arabic / RTL */
+html[dir="rtl"] body{
+  font-family:Tahoma,"Segoe UI",Arial,sans-serif
+}
+html[dir="rtl"] .selected-file{text-align:right}
+html[dir="rtl"] .provider{text-align:left}
+html[dir="rtl"] .section ul{padding-left:0;padding-right:18px}
+html[dir="rtl"] .step:not(:last-child):after{
+  left:auto;right:67%
+}
+html[dir="rtl"] .spinner{margin-right:0;margin-left:8px}
+
+@media(max-width:980px){
+  .app{grid-template-columns:1fr}
+  .sidebar{position:relative;height:auto;padding:18px 20px}
+  .sidebar-bottom{margin-top:20px}
+  .content{padding:22px 16px 36px}
+  .steps{grid-template-columns:repeat(3,1fr);row-gap:18px}
+  .step:after{display:none}
+}
+@media(max-width:700px){
+  .header{display:block}
+  .header-actions{justify-content:flex-start;margin-top:14px}
+  .header h2{font-size:28px}
+  .report-grid{grid-template-columns:1fr}
+  .report-head{align-items:flex-start;display:block}
+  .provider{text-align:left;margin-top:10px}
+  .selected-file{min-width:0;width:100%}
+  .file-row{width:100%}
+  .steps{grid-template-columns:repeat(2,1fr)}
+}
+
+/* ===== Presentation-grade collapsible sidebar ===== */
+.app{
+  grid-template-columns:230px minmax(0,1fr);
+  transition:grid-template-columns .28s cubic-bezier(.4,0,.2,1);
+}
+.sidebar{
+  position:sticky;
+  overflow:visible;
+  isolation:isolate;
+  transition:padding .28s cubic-bezier(.4,0,.2,1);
+  box-shadow:12px 0 32px rgba(7,19,46,.10);
+}
+.sidebar::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-2;
+  pointer-events:none;
+  background:
+    radial-gradient(circle at 50% 9%, rgba(115,84,255,.18), transparent 25%),
+    radial-gradient(circle at 20% 75%, rgba(56,189,248,.07), transparent 26%);
+}
+.sidebar::after{
+  content:"";
+  position:absolute;
+  left:0;right:0;top:0;height:3px;
+  background:linear-gradient(90deg,#5b6dff,#8a55ff,#4cb8ff);
+  opacity:.95;
+}
+.sidebar-main{min-width:0}
+.brand{position:relative}
+.brand-icon{
+  position:relative;
+  overflow:hidden;
+  transition:width .28s ease,height .28s ease,margin .28s ease,border-radius .28s ease;
+}
+.brand-icon::after{
+  content:"";
+  position:absolute;
+  inset:-40%;
+  background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.28) 50%,transparent 60%);
+  transform:translateX(-70%) rotate(12deg);
+  animation:brandShine 5.5s ease-in-out infinite;
+}
+@keyframes brandShine{
+  0%,72%,100%{transform:translateX(-70%) rotate(12deg)}
+  82%{transform:translateX(70%) rotate(12deg)}
+}
+.brand-copy{
+  overflow:hidden;
+  transition:opacity .18s ease,max-height .28s ease,transform .28s ease;
+}
+.demo-ready{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  margin-top:15px;
+  padding:6px 10px;
+  border:1px solid rgba(76,224,158,.18);
+  background:rgba(35,190,125,.08);
+  border-radius:999px;
+  color:#8fe7be;
+  font-size:8px;
+  font-weight:800;
+  letter-spacing:1.35px;
+}
+.demo-ready-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:#3bd393;
+  box-shadow:0 0 0 4px rgba(59,211,147,.10),0 0 13px rgba(59,211,147,.6);
+}
+.nav-chip{
+  min-height:52px;
+  transition:width .28s ease,padding .28s ease,margin .28s ease,border-radius .28s ease;
+  overflow:hidden;
+  white-space:nowrap;
+}
+.nav-icon{font-size:14px;min-width:18px;text-align:center}
+.nav-label{
+  transition:opacity .18s ease,max-width .28s ease;
+  overflow:hidden;
+}
+.capability-row{
+  display:flex;
+  justify-content:center;
+  gap:6px;
+  margin-top:12px;
+  transition:opacity .18s ease,max-height .28s ease;
+}
+.capability-row span{
+  padding:4px 7px;
+  border-radius:6px;
+  background:rgba(255,255,255,.055);
+  border:1px solid rgba(255,255,255,.07);
+  color:#8190b4;
+  font-size:7px;
+  font-weight:800;
+  letter-spacing:1px;
+}
+.provider-card{
+  margin-bottom:0;
+  padding:12px;
+  background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.035));
+  backdrop-filter:blur(10px);
+  transition:padding .28s ease,border-radius .28s ease;
+}
+.provider-top{display:flex;align-items:flex-start;gap:10px}
+.provider-symbol{
+  flex:0 0 32px;
+  width:32px;height:32px;border-radius:9px;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,rgba(89,109,255,.32),rgba(126,84,255,.32));
+  border:1px solid rgba(145,132,255,.22);
+  color:#c8c2ff;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.7px;
+}
+.provider-copy{
+  min-width:0;
+  overflow:hidden;
+  transition:opacity .18s ease,max-width .28s ease;
+}
+.provider-copy b{margin-bottom:3px}
+.provider-copy #providerSide{
+  display:block;
+  color:#d7def0;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.provider-copy #modelSide{
+  margin-top:2px;
+  color:#9faccc;
+  white-space:nowrap;
+}
+.ready{
+  padding-top:9px;
+  margin-top:9px;
+  border-top:1px solid rgba(255,255,255,.065);
+}
+.ready-text{white-space:nowrap;overflow:hidden}
+.company-area{
+  overflow:hidden;
+  transition:opacity .18s ease,max-height .28s ease,transform .28s ease;
+}
+.company-divider{margin:16px 0 15px}
+.company-label{font-size:8px;letter-spacing:1.65px}
+.company-fallback strong{font-size:15px;line-height:1.05}
+.company-fallback span{font-size:9px;margin-top:5px}
+.company-note{font-size:8px;margin-top:9px;color:#8494b5}
+
+.sidebar-toggle{
+  position:absolute;
+  top:22px;
+  right:-14px;
+  z-index:20;
+  width:29px;height:29px;
+  border:1px solid #dce2f0;
+  border-radius:50%;
+  background:#fff;
+  color:#48536f;
+  display:grid;
+  place-items:center;
+  padding:0;
+  cursor:pointer;
+  box-shadow:0 7px 20px rgba(24,34,68,.16);
+  transition:transform .2s ease,box-shadow .2s ease,background .2s ease;
+}
+.sidebar-toggle:hover{
+  transform:scale(1.08);
+  box-shadow:0 9px 24px rgba(24,34,68,.22);
+  background:#fafbff;
+}
+.sidebar-toggle span{
+  display:block;
+  font-size:22px;
+  line-height:1;
+  margin-top:-2px;
+  transition:transform .28s ease;
+}
+
+/* Collapsed desktop state */
+.app.sidebar-collapsed{
+  grid-template-columns:84px minmax(0,1fr);
+}
+.app.sidebar-collapsed .sidebar{
+  padding:27px 12px 20px;
+}
+.app.sidebar-collapsed .brand-icon{
+  width:48px;height:48px;
+  border-radius:14px;
+  margin-bottom:0;
+  font-size:24px;
+}
+.app.sidebar-collapsed .brand-copy{
+  opacity:0;
+  max-height:0;
+  transform:translateY(-6px);
+  pointer-events:none;
+}
+.app.sidebar-collapsed .nav-chip{
+  width:52px;
+  padding:0;
+  margin:28px auto 0;
+  border-radius:14px;
+}
+.app.sidebar-collapsed .nav-label{
+  opacity:0;
+  max-width:0;
+}
+.app.sidebar-collapsed .capability-row{
+  opacity:0;
+  max-height:0;
+  margin-top:0;
+  overflow:hidden;
+}
+.app.sidebar-collapsed .provider-card{
+  width:54px;
+  margin:14px 12px 8px;
+  padding:10px;
+  border-radius:14px;
+}
+.app.sidebar-collapsed .provider-top{
+  display:block;
+}
+.app.sidebar-collapsed .provider-symbol{
+  margin:0 auto;
+}
+.app.sidebar-collapsed .provider-copy{
+  opacity:0;
+  max-width:0;
+  max-height:0;
+}
+.app.sidebar-collapsed .ready{
+  justify-content:center;
+  padding-top:9px;
+}
+.app.sidebar-collapsed .ready-text{
+  display:none;
+}
+.app.sidebar-collapsed .company-area{
+  opacity:0;
+  max-height:0;
+  transform:translateY(6px);
+  pointer-events:none;
+}
+.app.sidebar-collapsed .sidebar-toggle span{
+  transform:rotate(180deg);
+}
+
+/* Arabic keeps the control on the page edge */
+html[dir="rtl"] .sidebar-toggle{
+  right:auto;
+  left:-14px;
+}
+html[dir="rtl"] .app.sidebar-collapsed .sidebar-toggle span{
+  transform:rotate(0deg);
+}
+html[dir="rtl"] .app:not(.sidebar-collapsed) .sidebar-toggle span{
+  transform:rotate(180deg);
+}
+
+@media(max-width:980px){
+  .app,.app.sidebar-collapsed{grid-template-columns:1fr}
+  .sidebar{
+    position:relative;
+    height:auto;
+    padding:18px 20px;
+  }
+  .sidebar-toggle{display:none}
+  .sidebar-bottom{margin-top:22px}
+  .company-area{max-height:none;opacity:1;transform:none}
+  .brand-copy,.provider-copy{opacity:1;max-height:none;max-width:none;transform:none}
+  .capability-row{opacity:1;max-height:none}
+}
+
+/* ===== AlGhazzawi logo integration ===== */
+.brand-logo{width:64px;height:64px;object-fit:contain;border-radius:14px;background:#fff;padding:5px;box-shadow:0 10px 24px rgba(0,0,0,.18);flex:0 0 auto}
+.company-logo{width:72px;height:72px;object-fit:contain;border-radius:12px;background:#fff;padding:5px;margin:0 auto 10px;display:block;box-shadow:0 8px 20px rgba(0,0,0,.14)}
+.app.sidebar-collapsed .brand-logo{width:46px;height:46px;padding:3px}
+.app.sidebar-collapsed .company-logo{width:44px;height:44px;margin-bottom:0}
+@media(max-width:900px){.brand-logo{width:54px;height:54px}}
+
+
+/* Bottom assessment branding: avoid repeating the firm logo */
+.justice-mark{width:68px;height:68px;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:43px;line-height:1;color:#e4f4ec;background:rgba(20,150,95,.10);border:1px solid rgba(105,210,160,.12);border-radius:15px;text-shadow:0 4px 14px rgba(0,0,0,.18)}
+.app.sidebar-collapsed .justice-mark{width:44px;height:44px;font-size:28px;margin:0 auto}
+
+/* Final presentation polish: compact AI provider card */
+.provider-card .provider-name { line-height: 1.35; }
+.provider-card .provider-label { line-height: 1.2; }
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<aside class="sidebar" id="sidebar">
+  <button
+    id="sidebarToggle"
+    class="sidebar-toggle"
+    type="button"
+    title="Collapse sidebar"
+    aria-label="Collapse sidebar"
+    aria-expanded="true"
+  >
+    <span id="sidebarToggleIcon">‹</span>
+  </button>
+
+  <div class="sidebar-main">
+    <div class="brand">
+      <img class="brand-logo" src="data:image/jpeg;base64,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" alt="AlGhazzawi &amp; Partners logo" title="AlGhazzawi &amp; Partners">
+
+      <div class="brand-copy">
+        <h1>Case Analyst</h1>
+        <p data-i18n="brandSubtitle">
+          AI-powered first-pass<br>legal case assessment
+        </p>
+
+        <div class="demo-ready">
+          <span class="demo-ready-dot"></span>
+          <span>LIVE DEMO READY</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-chip" title="Case Assessment">
+      <span class="nav-icon">⌂</span>
+      <span class="nav-label" data-i18n="caseAssessment">Case Assessment</span>
+    </div>
+
+    <div class="capability-row">
+      <span>AGENT</span>
+      <span>RAG</span>
+      <span>LLM</span>
+    </div>
+  </div>
+
+  <div class="sidebar-bottom">
+    <div class="sidebar-card provider-card" title="AI Provider">
+      <div class="provider-top">
+        <div class="provider-symbol">AI</div>
+
+        <div class="provider-copy">
+          <b data-i18n="developmentProvider">AI Provider</b>
+          <span id="providerSide">Configured LLM</span>
+          <div id="modelSide">Model ready</div>
+        </div>
+      </div>
+
+      <div class="ready">
+        <span class="dot"></span>
+        <span class="ready-text" data-i18n="systemReady">System ready</span>
+      </div>
+    </div>
+
+    <div class="company-area">
+      <div class="company-divider"></div>
+
+      <div class="company-brand">
+        <div class="company-label" data-i18n="assessmentFor">
+          Candidate Assessment For
+        </div>
+
+        <div class="justice-mark" aria-hidden="true">⚖</div>
+
+        <div class="company-fallback">
+          <strong>AL GHAZZAWI &amp; PARTNERS</strong>
+          <span>LAW FIRM</span>
+        </div>
+
+        <div class="company-note" data-i18n="candidateNote">
+          Candidate-developed demonstration MVP.<br>
+          Not a production firm system.
+        </div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<main class="content">
+
+  <div class="header">
+    <div>
+      <h2>
+        <span data-i18n="aiPowered">AI-Powered</span>
+        <span class="gradient-text" data-i18n="legalCaseAnalysis">Legal Case Analysis</span>
+      </h2>
+      <p data-i18n="headerDescription">
+        Upload legal case materials to generate a structured first-pass assessment using the Case Analyst Agent.
+      </p>
+    </div>
+
+    <div class="header-actions">
+              <button id="pdfBtn" class="btn btn-primary pdf-btn">↓ Download PDF Report</button>
+
+
+      <div class="language-switch" aria-label="Language selector">
+        <button id="langEn" class="lang-btn active" type="button">English</button>
+        <button id="langAr" class="lang-btn" type="button">العربية</button>
+      </div>
+      <div class="badge">DEMO / ASSESSMENT</div>
+    </div>
+  </div>
+
+  <section class="card upload-card">
+    <div class="dropzone">
+      <div class="upload-icon">↑</div>
+      <h3 data-i18n="uploadTitle">Upload legal case materials</h3>
+      <p data-i18n="uploadSub">PDF, DOCX or TXT · Use fictional/public documents only</p>
+
+      <div class="file-row">
+        <label class="file-picker btn btn-primary">
+          <span data-i18n="uploadDocuments">Upload Documents</span>
+          <input id="files" type="file" multiple accept=".pdf,.docx,.txt">
+        </label>
+
+        <div id="selectedFile" class="selected-file" data-i18n="noFile">No file selected</div>
+
+        <button id="analyzeBtn" class="btn btn-primary">
+          <span data-i18n="runAnalysis">Run Case Analysis</span>
+        </button>
+      </div>
+
+      <div class="tip" data-i18n="demoTip">
+        Demo sample: sample_cases/fictional_supply_agreement_dispute.txt
+      </div>
+    </div>
+  </section>
+
+  <section id="workflow" class="card workflow">
+    <div class="workflow-title" data-i18n="workflowTitle">AI Agent Workflow</div>
+
+    <div class="steps">
+      <div class="step"><div class="circle">▤</div><span data-i18n="step1">1. Upload<br>Document</span><div class="check">✓</div></div>
+      <div class="step"><div class="circle">▥</div><span data-i18n="step2">2. Extract<br>Text</span><div class="check">✓</div></div>
+      <div class="step"><div class="circle">◉</div><span data-i18n="step3">3. Case Analyst<br>Agent</span><div class="check">✓</div></div>
+      <div class="step"><div class="circle">◫</div><span data-i18n="step4">4. Retrieve Context<br>(RAG)</span><div class="check">✓</div></div>
+      <div class="step"><div class="circle">✦</div><span data-i18n="step5">5. Anthropic Claude<br>/ LLM</span><div class="check">✓</div></div>
+      <div class="step"><div class="circle">▧</div><span data-i18n="step6">6. Structured<br>Report</span><div class="check">✓</div></div>
+    </div>
+  </section>
+
+  <div id="status" class="status"></div>
+
+  <section id="report" class="card report">
+    <div class="report-head">
+      <div class="report-title">
+        <div class="report-mark">⚖</div>
+        <div>
+          <h2 data-i18n="reportTitle">Structured First-Pass Legal Assessment</h2>
+          <div id="fileMeta" class="meta"></div>
+        </div>
+      </div>
+
+      <div class="provider">
+        <div id="modelMeta" class="meta"></div>
+        <button id="pdfBtn" class="btn btn-primary pdf-btn" type="button">
+          <span data-i18n="downloadPdf">↓ Download PDF Report</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="report-grid">
+      <div class="section"><h3><span class="ico i-summary">▮</span><span data-i18n="caseSummary">Case Summary</span></h3><p id="case_summary"></p></div>
+      <div class="section"><h3><span class="ico i-strong">✓</span><span data-i18n="strongPoints">Strong Points</span></h3><ul id="strong_points"></ul></div>
+      <div class="section"><h3><span class="ico i-weak">!</span><span data-i18n="weakPoints">Weak Points</span></h3><ul id="weak_points"></ul></div>
+      <div class="section"><h3><span class="ico i-risk">⚖</span><span data-i18n="legalRisks">Potential Legal Risks</span></h3><ul id="potential_legal_risks"></ul></div>
+      <div class="section"><h3><span class="ico i-missing">▰</span><span data-i18n="missingEvidence">Missing Evidence or Information</span></h3><ul id="missing_evidence_or_information"></ul></div>
+      <div class="section"><h3><span class="ico i-entity">●</span><span data-i18n="entitiesDates">Key People, Companies, Organizations, and Dates</span></h3><ul id="key_entities_and_dates"></ul></div>
+      <div class="section"><h3><span class="ico i-question">?</span><span data-i18n="suggestedQuestions">Suggested Questions</span></h3><ul id="suggested_questions"></ul></div>
+      <div class="section"><h3><span class="ico i-next">➜</span><span data-i18n="nextSteps">Recommended Next Steps</span></h3><ul id="recommended_next_steps"></ul></div>
+    </div>
+
+    <div class="card sources">
+      <h3>▣ &nbsp;<span data-i18n="ragTitle">Retrieved Supporting Context (RAG)</span></h3>
+      <div id="sources"></div>
+    </div>
+  </section>
+
+  <div class="footer" data-i18n="footerText">
+    Case Analyst MVP · AI-powered first-pass legal assessment · Candidate assessment demo
+  </div>
+
+</main>
+</div>
+
+<script>
+let currentAnalysisId = null;
+let currentLanguage = 'en';
+
+const translations = {
+  en: {
+    brandSubtitle:'AI-powered first-pass<br>legal case assessment',
+    caseAssessment:'Case Assessment',
+    developmentProvider:'AI Provider',
+    systemReady:'System ready',
+    assessmentFor:'Candidate Assessment For',
+    candidateNote:'Candidate-developed demonstration MVP.<br>Not a production firm system.',
+    aiPowered:'AI-Powered',
+    legalCaseAnalysis:'Legal Case Analysis',
+    headerDescription:'Upload legal case materials to generate a structured first-pass assessment using the Case Analyst Agent.',
+    uploadTitle:'Upload legal case materials',
+    uploadSub:'PDF, DOCX or TXT · Use fictional/public documents only',
+    uploadDocuments:'Upload Documents',
+    noFile:'No file selected',
+    runAnalysis:'Run Case Analysis',
+    demoTip:'Demo sample: sample_cases/fictional_supply_agreement_dispute.txt',
+    workflowTitle:'AI Agent Workflow',
+    step1:'1. Upload<br>Document',
+    step2:'2. Extract<br>Text',
+    step3:'3. Case Analyst<br>Agent',
+    step4:'4. Retrieve Context<br>(RAG)',
+    step5:'5. Anthropic Claude<br>/ LLM',
+    step6:'6. Structured<br>Report',
+    reportTitle:'Structured First-Pass Legal Assessment',
+    downloadPdf:'↓ Download PDF Report',
+    caseSummary:'Case Summary',
+    strongPoints:'Strong Points',
+    weakPoints:'Weak Points',
+    legalRisks:'Potential Legal Risks',
+    missingEvidence:'Missing Evidence or Information',
+    entitiesDates:'Key People, Companies, Organizations, and Dates',
+    suggestedQuestions:'Suggested Questions',
+    nextSteps:'Recommended Next Steps',
+    ragTitle:'Retrieved Supporting Context (RAG)',
+    footerText:'Case Analyst MVP · AI-powered first-pass legal assessment · Candidate assessment demo',
+    noIdentified:'Not identified from the supplied material.',
+    selectFile:'Please select at least one PDF, DOCX, or TXT file.',
+    processing:'Uploading documents, extracting text, and running the Case Analyst Agent...',
+    success:'✓ Analysis completed successfully!',
+    analyze:'Run Case Analysis',
+    analyzing:'Analyzing...',
+    filesLabel:'Files',
+    charsLabel:'Extracted characters',
+    providerLabel:'Provider',
+    modelLabel:'Model',
+    noRag:'No internal knowledge item passed the retrieval threshold.',
+    runFirst:'Please run a case analysis first.'
+  },
+  ar: {
+    brandSubtitle:'تقييم أولي للقضايا القانونية<br>مدعوم بالذكاء الاصطناعي',
+    caseAssessment:'تقييم القضية',
+    developmentProvider:'مزود الذكاء الاصطناعي',
+    systemReady:'النظام جاهز',
+    assessmentFor:'تقييم مرشح لصالح',
+    candidateNote:'نموذج تجريبي تم تطويره لأغراض التقييم.<br>ليس نظاماً إنتاجياً للشركة.',
+    aiPowered:'تحليل مدعوم بالذكاء الاصطناعي',
+    legalCaseAnalysis:'للقضايا القانونية',
+    headerDescription:'ارفع مستندات القضية لإنشاء تقييم قانوني أولي منظم باستخدام وكيل Case Analyst.',
+    uploadTitle:'رفع مستندات القضية القانونية',
+    uploadSub:'PDF أو DOCX أو TXT · استخدم مستندات خيالية أو عامة فقط',
+    uploadDocuments:'رفع المستندات',
+    noFile:'لم يتم اختيار ملف',
+    runAnalysis:'تشغيل تحليل القضية',
+    demoTip:'ملف العرض التجريبي: sample_cases/fictional_supply_agreement_dispute.txt',
+    workflowTitle:'مسار عمل وكيل الذكاء الاصطناعي',
+    step1:'1. رفع<br>المستند',
+    step2:'2. استخراج<br>النص',
+    step3:'3. وكيل<br>Case Analyst',
+    step4:'4. استرجاع السياق<br>(RAG)',
+    step5:'5. Anthropic Claude<br>/ LLM',
+    step6:'6. إنشاء<br>التقرير',
+    reportTitle:'التقييم القانوني الأولي المنظم',
+    downloadPdf:'↓ تنزيل تقرير PDF',
+    caseSummary:'ملخص القضية',
+    strongPoints:'نقاط القوة',
+    weakPoints:'نقاط الضعف',
+    legalRisks:'المخاطر القانونية المحتملة',
+    missingEvidence:'الأدلة أو المعلومات المفقودة',
+    entitiesDates:'الأشخاص والشركات والمنظمات والتواريخ الرئيسية',
+    suggestedQuestions:'الأسئلة المقترحة',
+    nextSteps:'الخطوات التالية الموصى بها',
+    ragTitle:'السياق الداعم المسترجع (RAG)',
+    footerText:'Case Analyst MVP · تقييم قانوني أولي بالذكاء الاصطناعي · نموذج تقييم مرشح',
+    noIdentified:'لم يتم تحديد ذلك من المواد المقدمة.',
+    selectFile:'يرجى اختيار ملف واحد على الأقل بصيغة PDF أو DOCX أو TXT.',
+    processing:'جارٍ رفع المستندات واستخراج النص وتشغيل وكيل Case Analyst...',
+    success:'✓ اكتمل التحليل بنجاح!',
+    analyze:'تشغيل تحليل القضية',
+    analyzing:'جارٍ التحليل...',
+    filesLabel:'الملفات',
+    charsLabel:'عدد الأحرف المستخرجة',
+    providerLabel:'المزود',
+    modelLabel:'النموذج',
+    noRag:'لم يتجاوز أي عنصر من قاعدة المعرفة حد الاسترجاع.',
+    runFirst:'يرجى تشغيل تحليل القضية أولاً.'
+  }
+};
+
+function t(key){
+  return translations[currentLanguage][key] || translations.en[key] || key;
+}
+
+function applyLanguage(lang){
+  currentLanguage = lang;
+  document.documentElement.lang = lang === 'ar' ? 'ar' : 'en';
+  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+
+  document.getElementById('langEn').classList.toggle('active', lang === 'en');
+  document.getElementById('langAr').classList.toggle('active', lang === 'ar');
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    el.innerHTML = t(key);
+  });
+
+  updateSelectedFiles();
+  if(typeof updateSidebarToggle === 'function') updateSidebarToggle();
+}
+
+function esc(v){
+  return String(v ?? '')
+    .replaceAll('&','&amp;')
+    .replaceAll('<','&lt;')
+    .replaceAll('>','&gt;')
+    .replaceAll('"','&quot;')
+    .replaceAll("'",'&#039;');
+}
+
+function setList(id,items){
+  const el = document.getElementById(id);
+  const arr = Array.isArray(items) ? items : [];
+  el.innerHTML = arr.length
+    ? arr.map(x => `<li>${esc(x)}</li>`).join('')
+    : `<li>${esc(t('noIdentified'))}</li>`;
+}
+
+function showStatus(message,type){
+  const el = document.getElementById('status');
+  el.style.display = 'flex';
+  el.className = 'status ' + (type || '');
+  el.innerHTML = (type === 'loading' ? '<span class="spinner"></span>' : '') + esc(message);
+}
+
+function updateSelectedFiles(){
+  const files = [...document.getElementById('files').files];
+  document.getElementById('selectedFile').textContent =
+    files.length ? files.map(f => f.name).join(', ') : t('noFile');
+}
+
+document.getElementById('files').addEventListener('change',updateSelectedFiles);
+document.getElementById('langEn').addEventListener('click',()=>applyLanguage('en'));
+document.getElementById('langAr').addEventListener('click',()=>applyLanguage('ar'));
+
+async function analyze(){
+  const input = document.getElementById('files');
+
+  if(!input.files.length){
+    showStatus(t('selectFile'),'error');
+    return;
+  }
+
+  const form = new FormData();
+
+  for(const file of input.files){
+    form.append('files',file);
+  }
+
+  // IMPORTANT: backend main.py must accept this Form field.
+  form.append('language', currentLanguage);
+
+  const btn = document.getElementById('analyzeBtn');
+  const pdfBtn = document.getElementById('pdfBtn');
+
+  btn.disabled = true;
+  btn.textContent = t('analyzing');
+  currentAnalysisId = null;
+  pdfBtn.style.display = 'none';
+
+  document.getElementById('report').style.display = 'none';
+  document.getElementById('workflow').classList.remove('active');
+
+  showStatus(t('processing'),'loading');
+
+  try{
+    const res = await fetch('/cases/analyze',{method:'POST',body:form});
+    const data = await res.json();
+
+    if(!res.ok){
+      throw new Error(data.detail || 'Analysis failed');
+    }
+
+    const r = data.report || {};
+    currentAnalysisId = data.analysis_id;
+
+    if(currentAnalysisId){
+      pdfBtn.style.display = 'inline-flex';
+    }
+
+    document.getElementById('case_summary').textContent =
+      r.case_summary || t('noIdentified');
+
+    [
+      'strong_points',
+      'weak_points',
+      'potential_legal_risks',
+      'missing_evidence_or_information',
+      'key_entities_and_dates',
+      'suggested_questions',
+      'recommended_next_steps'
+    ].forEach(k => setList(k,r[k]));
+
+    document.getElementById('fileMeta').innerHTML =
+      `${esc(t('filesLabel'))}: ${data.filenames.map(esc).join(', ')}
+       &nbsp; · &nbsp;
+       ${esc(t('charsLabel'))}: ${data.extracted_characters}`;
+
+    document.getElementById('modelMeta').innerHTML =
+      `${esc(t('providerLabel'))}: <b>${esc(data.llm_provider)}</b><br>
+       ${esc(t('modelLabel'))}: ${esc(data.llm_model)}`;
+
+    document.getElementById('providerSide').textContent =
+      data.llm_provider || 'Configured LLM';
+
+    document.getElementById('modelSide').textContent =
+      `${t('modelLabel')}: ${data.llm_model || 'ready'}`;
+
+    const src = data.knowledge_sources || [];
+
+    document.getElementById('sources').innerHTML =
+      src.length
+      ? src.map(s =>
+          `<span class="source">${esc(s.name)} · Score ${Number(s.score).toFixed(3)}</span>`
+        ).join('')
+      : `<span class="meta">${esc(t('noRag'))}</span>`;
+
+    document.getElementById('workflow').classList.add('active');
+    document.getElementById('report').style.display = 'block';
+
+    showStatus(t('success'),'success');
+
+    setTimeout(() =>
+      document.getElementById('report').scrollIntoView({
+        behavior:'smooth',
+        block:'start'
+      }),150);
+
+  }catch(e){
+    showStatus(e.message,'error');
+  }finally{
+    btn.disabled = false;
+    btn.textContent = t('analyze');
+  }
+}
+
+document.getElementById('pdfBtn').addEventListener('click', () => {
+  if(!currentAnalysisId){
+    showStatus(t('runFirst'),'error');
+    return;
+  }
+
+  window.location.href = `/cases/${currentAnalysisId}/pdf`;
+});
+
+document.getElementById('analyzeBtn').addEventListener('click',analyze);
+
+
+// Presentation sidebar: expand/collapse without affecting the backend.
+const appShell = document.querySelector('.app');
+const sidebarToggle = document.getElementById('sidebarToggle');
+
+function updateSidebarToggle(){
+  if(!sidebarToggle) return;
+
+  const collapsed = appShell.classList.contains('sidebar-collapsed');
+  const isArabic = currentLanguage === 'ar';
+
+  sidebarToggle.setAttribute('aria-expanded', String(!collapsed));
+  sidebarToggle.setAttribute(
+    'aria-label',
+    collapsed ? (isArabic ? 'توسيع الشريط الجانبي' : 'Expand sidebar')
+              : (isArabic ? 'طي الشريط الجانبي' : 'Collapse sidebar')
+  );
+  sidebarToggle.title =
+    collapsed ? (isArabic ? 'توسيع الشريط الجانبي' : 'Expand sidebar')
+              : (isArabic ? 'طي الشريط الجانبي' : 'Collapse sidebar');
+}
+
+if(sidebarToggle){
+  sidebarToggle.addEventListener('click', () => {
+    appShell.classList.toggle('sidebar-collapsed');
+    updateSidebarToggle();
+  });
+}
+
+updateSidebarToggle();
+applyLanguage('en');
+</script>
+</body>
+</html>

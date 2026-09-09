@@ -1,263 +1,109 @@
-# AlGhazzawi Legal AI Assistant - Demo MVP
+# Case Analyst - Legal AI Assessment MVP
 
-A small working AI-enabled law firm operations MVP prepared for technical demonstration purposes.
+A working legal AI assessment project for a fictional law-firm scenario. The application accepts one or more legal documents, extracts text, runs a Case Analyst AI Agent, retrieves supporting internal knowledge, invokes the configured LLM, and returns a structured first-pass legal assessment.
 
-> **Important:** This is a demo/assessment project. It is not an official AlGhazzawi production system and does not contain confidential company or client data.
+> Demo/assessment only. Use only fictional, synthetic, or public material. It is not an official production system and does not provide final legal advice.
 
-## What It Demonstrates
+## Core assessment workflow
 
-- FastAPI REST APIs
-- Legal matter / service request intake
-- AI-assisted practice-area classification
-- Priority recommendation
-- RAG-style retrieval from an internal legal knowledge base
-- Local LLM integration using Ollama + Llama 3.2
-- AI-generated matter summary and suggested next step
-- Matter lifecycle and status updates
-- Dashboard for legal matters
-- SQLAlchemy database integration
-- SQLite by default; PostgreSQL supported
-- Swagger API documentation
-- Application architecture
+`Upload PDF/DOCX/TXT -> Extract Text -> Case Analyst Agent -> RAG -> Anthropic Claude -> Structured Legal Report -> Web UI`
 
-## Technology Stack
+The `CaseAnalystAgent` is separate from the LLM. It orchestrates retrieval, prompt preparation, model invocation, response validation, and report generation.
 
-- **Backend:** Python, FastAPI
-- **AI/LLM:** Ollama, Llama 3.2
-- **Retrieval:** TF-IDF and cosine similarity
-- **Database:** SQLAlchemy, SQLite / PostgreSQL
-- **API:** REST APIs
-- **API Documentation:** Swagger / OpenAPI
-- **Frontend:** HTML, CSS and JavaScript
+## Structured report
 
-## Example Use Case
+- Case Summary
+- Strong Points
+- Weak Points
+- Potential Legal Risks
+- Missing Evidence or Information
+- Key People, Companies, Organizations, and Dates
+- Suggested Questions
+- Recommended Next Steps
 
-**Client / Matter Name:**
+## Technology choices
 
-`Al Noor Trading Company`
+- Python + FastAPI for REST APIs and automatic Swagger/OpenAPI documentation
+- SQLAlchemy with SQLite for the local MVP; PostgreSQL can be configured
+- `pypdf` for PDF text extraction
+- `python-docx` for DOCX text extraction
+- TF-IDF + cosine similarity for lightweight RAG over the small demo knowledge base
+- Anthropic Claude integration through the Messages API
+- Ollama + Llama 3.2 retained only as a free local-development fallback
 
-**Title:**
+## LLM configuration
 
-`Review termination clause in supply agreement`
-
-**Description:**
-
-`The client wants to review the termination clause in a supply agreement and understand the notice requirements and key obligations before taking further action.`
-
-**Expected AI Output:**
-
-- Practice Area: Contract Review
-- Priority: Medium
-- Relevant internal knowledge source
-- AI-generated matter summary
-- Suggested next step
-
-## AI Workflow
-
-The application follows this workflow:
-
-```text
-Legal Matter
-     |
-     v
-FastAPI API
-     |
-     v
-Practice Area & Priority Classification
-     |
-     v
-RAG-Style Knowledge Retrieval
-     |
-     v
-Internal Legal Knowledge Base
-     |
-     v
-Ollama / Llama 3.2
-     |
-     v
-AI Summary + Suggested Next Step
-     |
-     v
-Database
-     |
-     v
-Matter Dashboard
-```
-
-## Architecture
-
-```text
-User
-  |
-  v
-Legal AI Web Portal
-  |
-  v
-FastAPI REST API
-  |
-  +--------------------> SQLAlchemy / Database
-  |
-  +--------------------> Practice Area & Priority Classification
-  |
-  +--------------------> RAG Retriever
-  |                         |
-  |                         v
-  |                  Internal Legal Knowledge Base
-  |                         |
-  |                         v
-  +--------------------> Ollama / Llama 3.2
-                            |
-                            v
-                 AI Summary + Suggested Next Step
-```
-
-## How the Application Works
-
-1. The user submits a legal matter through the web interface.
-2. FastAPI receives and validates the request.
-3. The application identifies the relevant practice area and recommends a priority.
-4. The retrieval layer searches the internal legal knowledge base using TF-IDF and cosine similarity.
-5. Relevant knowledge is provided as context to the locally hosted Llama 3.2 model through Ollama.
-6. The LLM generates a concise matter summary and suggested next step.
-7. The legal matter and AI-generated results are stored using SQLAlchemy.
-8. The matter appears in the dashboard where its status can be managed.
-
-## Run the Project
-
-### 1. Create a virtual environment
-
-```bash
-python -m venv venv
-```
-
-### 2. Activate the virtual environment
-
-Windows Command Prompt:
-
-```bash
-venv\Scripts\activate.bat
-```
-
-### 3. Install dependencies
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Create the environment configuration
+Copy the environment file:
 
 ```bash
 copy .env.example .env
 ```
 
-### 5. Install Ollama and download the model
+### Anthropic Claude (assessment-required provider)
 
-Make sure Ollama is installed.
+Set:
 
-Then run:
+```env
+LLM_PROVIDER=claude
+ANTHROPIC_API_KEY=your_key_here
+ANTHROPIC_MODEL=claude-sonnet-4-20250514
+```
+
+No API key is included in this repository.
+
+### Free local development fallback
+
+If Claude API access is not available, the project can still be tested locally with Ollama:
+
+```env
+LLM_PROVIDER=ollama
+OLLAMA_URL=http://localhost:11434/api/generate
+OLLAMA_MODEL=llama3.2:3b
+```
+
+Then:
 
 ```bash
 ollama pull llama3.2:3b
 ```
 
-You can confirm the model with:
+The UI always displays the actual provider/model used, so the demo is transparent.
+
+## Run on Windows
 
 ```bash
-ollama list
-```
-
-### 6. Start the FastAPI application
-
-```bash
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+copy .env.example .env
 uvicorn app.main:app --reload
 ```
 
-### 7. Open the application
+Open:
 
-Application:
+- Web app: http://127.0.0.1:8000
+- Swagger: http://127.0.0.1:8000/docs
+- Health: http://127.0.0.1:8000/health
 
-`http://127.0.0.1:8000`
+## Demo case
 
-Swagger API documentation:
+Use:
 
-`http://127.0.0.1:8000/docs`
+`sample_cases/fictional_supply_agreement_dispute.txt`
 
-## Database Integration
+The sample is fictional and intentionally contains both supporting facts and missing evidence so the Case Analyst can demonstrate strengths, weaknesses, risks, missing information, questions, and next steps.
 
-The MVP uses **SQLAlchemy ORM** for database integration.
+## Important endpoints
 
-SQLite is used by default to keep the demo simple and easy to run.
+- `POST /cases/analyze` - upload one or more PDF/DOCX/TXT files and generate the structured report
+- `GET /cases/recent` - show recent stored analyses
+- `GET /health` - health check
+- Existing `/matters` endpoints are retained as a secondary workflow from the earlier MVP
 
-The application stores legal matter information including:
+## Architecture
 
-- Client / matter name
-- Request title
-- Description
-- Practice area
-- Priority
-- AI-generated summary
-- Suggested next step
-- Knowledge source
-- Matter status
+See `docs/architecture.svg` and `DESIGN.md`.
 
-## PostgreSQL Support
+## Production improvements
 
-For PostgreSQL, update `DATABASE_URL` in the `.env` file:
-
-```env
-DATABASE_URL=postgresql+psycopg2://postgres:password@localhost:5432/legal_ai
-```
-
-## API Documentation
-
-FastAPI automatically provides Swagger/OpenAPI documentation.
-
-After starting the application, open:
-
-`http://127.0.0.1:8000/docs`
-
-The API can be tested directly from the Swagger interface.
-
-## Knowledge Retrieval
-
-For this MVP, the retrieval layer uses **TF-IDF and cosine similarity** to identify relevant information from the internal legal knowledge base.
-
-This provides a lightweight RAG-style implementation suitable for demonstrating the complete AI workflow without requiring an external vector database.
-
-For a production implementation, the retrieval layer could be extended with embeddings and a vector database depending on scale and requirements.
-
-## Local LLM
-
-The MVP uses **Llama 3.2 through Ollama**.
-
-The LLM runs locally and is used to generate:
-
-- Matter summaries
-- Suggested next steps
-
-The LLM integration can later be replaced or extended with other model providers depending on production requirements.
-
-## Project Structure
-
-```text
-app/
-├── main.py
-├── database.py
-├── models.py
-├── schemas.py
-├── services/
-│   ├── ai.py
-│   └── rag.py
-└── static/
-    └── index.html
-
-knowledge_base/
-docs/
-README.md
-requirements.txt
-.env.example
-```
-
-## Disclaimer
-
-This application was created as a technical demonstration MVP. The legal knowledge included in the project is sample content only and should not be treated as legal advice.
+For real legal work, add strong authentication/RBAC, document-level authorization, encryption and secret management, audit logging, malware/file scanning, retention/deletion policies, observability, test coverage, human approval, citations to source passages, prompt/version management, evaluation datasets, PostgreSQL, and an embeddings/vector database for larger document collections.

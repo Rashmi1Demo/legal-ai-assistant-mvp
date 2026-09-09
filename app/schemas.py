@@ -1,14 +1,18 @@
-from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from typing import Optional
+
+from pydantic import BaseModel, ConfigDict
+
 
 class MatterCreate(BaseModel):
     title: str
     description: str
     client_name: Optional[str] = None
 
+
 class MatterStatusUpdate(BaseModel):
     status: str
+
 
 class MatterOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)

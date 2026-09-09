@@ -1,0 +1,35 @@
+FICTIONAL LEGAL CASE - FOR ASSESSMENT DEMONSTRATION ONLY
+
+Parties:
+Al Noor Trading Company (Buyer)
+Desert Components LLC (Supplier)
+
+Agreement:
+Supply Agreement dated 10 January 2026 for monthly delivery of industrial components.
+
+Key terms described in the case materials:
+- The Supplier must deliver 1,000 units by the 5th day of each month.
+- The Buyer may terminate for material breach after giving 30 days' written notice and an opportunity to cure.
+- Notices must be sent to the contractual notice address by courier and email.
+
+Events:
+- February 2026 delivery arrived 12 days late.
+- March 2026 delivery arrived 18 days late and 120 units were reported defective by the Buyer.
+- On 22 March 2026 the Buyer emailed a complaint to the Supplier's sales manager.
+- No courier notice is included in the supplied case file.
+- The Supplier replied on 25 March 2026 saying delays were caused by a port disruption and promised replacement units.
+- The Buyer wants to terminate immediately and recover losses from delayed production.
+
+Available evidence:
+- Copy of the Supply Agreement.
+- February and March delivery records.
+- Buyer's email dated 22 March 2026.
+- Supplier's response dated 25 March 2026.
+
+Information not included:
+- No courier receipt for a formal breach notice.
+- No detailed calculation of the Buyer's claimed losses.
+- No inspection report for the allegedly defective units.
+
+Question for first-pass assessment:
+Identify the strongest and weakest aspects of the Buyer's position, major legal or evidentiary risks, missing information, suggested questions, and recommended next steps. Do not provide a final legal opinion.
